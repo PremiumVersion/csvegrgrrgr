@@ -126,3 +126,6 @@ checkBtn.MouseButton1Click:Connect(function()
 		result.Text = "❌ Wrong key."
 	end
 end)
+tambahin permanen key gini
+
+	[9348359815] = {key = "NexaPremium_NX81SW8V", issuedDate = "Permanen"}, -- yes
