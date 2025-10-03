@@ -1,4 +1,3 @@
-
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
@@ -12,12 +11,16 @@ local validUsers = {
 	[9529082141] = {key = "NexaPremium_91F3YK69", issuedDate = "2025-10-26 12"}, -- yes
 	[2314101743] = {key = "NexaPremium_U9IMV3YW", issuedDate = "2025-10-31 14"}, -- yes
 	[9348359815] = {key = "NexaPremium_NX81SW8V", issuedDate = "2025-11-2 14"}, -- yes
+	[] = {key = "", issuedDate = "Permanen"}, -- permanent
 }
 
 local expireAfter = 30 * 24 * 60 * 60 -- 30 hari
 
--- Helper: Parse date
+-- Helper: Parse date (kecuali "Permanen")
 local function parseDate(str)
+	if str == "Permanen" then
+		return nil -- tanda khusus permanent
+	end
 	local y, m, d, h = str:match("(%d+)%-(%d+)%-(%d+) (%d+)")
 	return os.time({year=tonumber(y), month=tonumber(m), day=tonumber(d), hour=tonumber(h)})
 end
@@ -27,7 +30,7 @@ local userData = validUsers[player.UserId]
 if not userData then return end
 
 local issuedTimestamp = parseDate(userData.issuedDate)
-local expiredTimestamp = issuedTimestamp + expireAfter
+local expiredTimestamp = issuedTimestamp and (issuedTimestamp + expireAfter) or math.huge -- kalau permanen → never expire
 
 -- GUI Key System
 local playerGui = player:WaitForChild("PlayerGui")
@@ -114,8 +117,15 @@ checkBtn.MouseButton1Click:Connect(function()
 
 		-- Key valid → hilangkan GUI
 		result.TextColor3 = Color3.fromRGB(0,255,0)
-		result.Text = "✅ Key valid! Loading script..."
-		if screenGui then screenGui:Destroy() end
+		if userData.issuedDate == "Permanen" then
+			result.Text = "✅ Key valid (Permanent)! Loading script..."
+		else
+			result.Text = "✅ Key valid! Sisa: " .. formatRemaining(remainingTime)
+		end
+
+		task.delay(1, function()
+			if screenGui then screenGui:Destroy() end
+		end)
 
 		-- Load Nexa Premium
 		pcall(function()
@@ -126,6 +136,3 @@ checkBtn.MouseButton1Click:Connect(function()
 		result.Text = "❌ Wrong key."
 	end
 end)
-tambahin permanen key gini
-
-	[9348359815] = {key = "NexaPremium_NX81SW8V", issuedDate = "Permanen"}, -- yes
