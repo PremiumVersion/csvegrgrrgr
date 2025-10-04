@@ -12,7 +12,6 @@ local validUsers = {
 	[2314101743] = {key = "NexaPremium_U9IMV3YW", issuedDate = "2025-10-31 14"}, -- yes
 	[9348359815] = {key = "NexaPremium_NX81SW8V", issuedDate = "2025-11-2 14"}, -- yes
 	[8868906888] = {key = "NexaPremium_efewygwf", issuedDate = "2025-11-3 08"}, -- Yes
-	[9480072017] = {key = "NexaPremium_LBPKI6CT", issuedDate = "2025-11-3 12"}, -- Yes
 	[5464154339] = {key = "Owner", issuedDate = "Permanen"}, -- Yes
 	[8309797161] = {key = "Owner", issuedDate = "Permanen"}, -- Yes
 }
