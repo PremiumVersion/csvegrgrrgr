@@ -11,7 +11,7 @@ local validUsers = {
 	[9529082141] = {key = "NexaPremium_91F3YK69", issuedDate = "2025-10-26 12"}, -- yes
 	[2314101743] = {key = "NexaPremium_U9IMV3YW", issuedDate = "2025-10-31 14"}, -- yes
 	[9348359815] = {key = "NexaPremium_NX81SW8V", issuedDate = "2025-11-2 14"}, -- yes
-	[] = {key = "", issuedDate = "Permanen"}, -- permanent
+	[206311] = {key = "NexaPremium_efewygwf", issuedDate = "2025-11-3 08"}, -- permanent
 }
 
 local expireAfter = 30 * 24 * 60 * 60 -- 30 hari
