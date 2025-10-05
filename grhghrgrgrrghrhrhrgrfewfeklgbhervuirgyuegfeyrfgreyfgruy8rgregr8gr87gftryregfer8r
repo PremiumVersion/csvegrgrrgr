@@ -5,7 +5,6 @@ local player = Players.LocalPlayer
 -- CONFIG: UserId -> {key, issuedDate}
 local validUsers = {
 	[9464607503] = {key = "NexaPremium_dngffvefgefug", issuedDate = "2025-10-18 21"}, -- yes
-	[5464154339] = {key = "NexaPremium_dhueheuwuwduu", issuedDate = "2025-10-18 21"}, -- no
 	[1444873051] = {key = "NexaPremium_6DB404IG", issuedDate = "2025-10-20 21"}, -- yes
 	[7854965065] = {key = "NexaPremium_91F3YK69", issuedDate = "2025-10-22 21"}, -- yes
 	[9529082141] = {key = "NexaPremium_91F3YK69", issuedDate = "2025-10-26 12"}, -- yes
@@ -13,6 +12,7 @@ local validUsers = {
 	[9348359815] = {key = "NexaPremium_NX81SW8V", issuedDate = "2025-11-2 14"}, -- yes
 	[8868906888] = {key = "NexaPremium_efewygwf", issuedDate = "2025-11-3 08"}, -- Yes
 	[9114573649] = {key = "NexaPremium_6V9GNUC1", issuedDate = "2025-11-4 18"}, -- Yes
+	[9383243342] = {key = "NexaPremium_P25P68X9", issuedDate = "2025-11-4 18"}, -- Yes
 	[5464154339] = {key = "Owner", issuedDate = "Permanen"}, -- Yes
 	[8309797161] = {key = "Owner", issuedDate = "Permanen"}, -- Yes
 	[8823821635] = {key = "Owner", issuedDate = "Permanen"}, -- Yes
