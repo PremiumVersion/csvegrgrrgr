@@ -22,7 +22,7 @@ local validUsers = {
 	[8823821635] = {key = "Owner", issuedDate = "Permanen"},
 }
 
-local expireAfter = 30 * 24 * 60 * 60
+local expireAfter = 30 * 24 * 60 * 60 -- 30 hari
 
 local function parseDate(str)
 	if str == "Permanen" then return nil end
@@ -36,6 +36,19 @@ local function formatRemaining(secs)
 	local h = math.floor((secs%86400)/3600)
 	local m = math.floor((secs%3600)/60)
 	return string.format("%d days %02d hrs %02d min",d,h,m)
+end
+
+-- fungsi baru untuk menghitung tanggal expired yang fix 30 hari
+local function getExpiration(userData)
+	if not userData then return 0 end
+	if userData.issuedDate == "Permanen" then
+		return math.huge
+	end
+	local issued = parseDate(userData.issuedDate) or os.time()
+	if issued > os.time() then
+		issued = os.time() -- jika tanggal issued di masa depan, pakai waktu sekarang
+	end
+	return issued + expireAfter
 end
 
 --// GUI SETUP
@@ -124,7 +137,6 @@ result.TextSize = 13
 result.TextColor3 = Color3.fromRGB(255,100,100)
 result.Text = ""
 
--- Right Panel Info
 local rightPanel = Instance.new("Frame", frame)
 rightPanel.Size = UDim2.new(0.55, -10, 1, -60)
 rightPanel.Position = UDim2.new(0.45,10,0,50)
@@ -158,7 +170,7 @@ footer.BackgroundTransparency = 1
 footer.Font = Enum.Font.Code
 footer.TextSize = 12
 footer.TextColor3 = Color3.fromRGB(160,160,160)
-footer.Text = "Key System • v1.0.0 • discord.gg/ECxQFc97F5"
+footer.Text = "Key System • v1.0.1 • discord.gg/ECxQFc97F5"
 
 --// NOTIFICATION FUNCTION
 local function ShowNotification(titleText, bodyText, duration)
@@ -219,12 +231,10 @@ local function ShowNotification(titleText, bodyText, duration)
 	button.Text = "OK"
 	Instance.new("UICorner", button).CornerRadius = UDim.new(0,4)
 
-	-- Slide In
 	TweenService:Create(frameN, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
 		Position = UDim2.new(0, 20, 0, 40)
 	}):Play()
 
-	-- Progress bar
 	TweenService:Create(underline, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
 		Size = UDim2.new(0, 0, 0, 2)
 	}):Play()
@@ -246,8 +256,7 @@ end
 
 --// MAIN LOGIC
 local userData = validUsers[player.UserId]
-local issuedTimestamp = userData and parseDate(userData.issuedDate)
-local expiredTimestamp = issuedTimestamp and (issuedTimestamp + expireAfter) or math.huge
+local expiredTimestamp = getExpiration(userData)
 
 enterBtn.MouseButton1Click:Connect(function()
 	local input = keyBox.Text
