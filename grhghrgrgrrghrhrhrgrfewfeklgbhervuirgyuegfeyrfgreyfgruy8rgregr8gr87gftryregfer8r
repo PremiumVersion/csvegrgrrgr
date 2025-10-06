@@ -60,7 +60,7 @@ header.Font = Enum.Font.Code
 header.TextSize = 20
 header.TextColor3 = Color3.fromRGB(255,130,0)
 header.TextXAlignment = Enum.TextXAlignment.Left
-header.Text = "R  Nexa Hub"
+header.Text = "Nexa Key System"
 
 -- Garis bawah header
 local line = Instance.new("Frame", frame)
@@ -160,7 +160,7 @@ footer.BackgroundTransparency = 1
 footer.Font = Enum.Font.Code
 footer.TextSize = 12
 footer.TextColor3 = Color3.fromRGB(160,160,160)
-footer.Text = "Key System • v1.0.0 • discord.gg/nexa"
+footer.Text = "Key System • v1.0.0 • discord.gg/ECxQFc97F5"
 
 -- Logic
 local userData = validUsers[player.UserId]
