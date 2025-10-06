@@ -5,29 +5,30 @@ local player = Players.LocalPlayer
 
 --// CONFIG
 local validUsers = {
-	[9464607503] = {key = "NexaPremium_dngffvefgefug", issuedDate = "2025-10-18 21"},
-	[1444873051] = {key = "NexaPremium_6DB404IG", issuedDate = "2025-10-20 21"},
-	[7854965065] = {key = "NexaPremium_91F3YK69", issuedDate = "2025-10-22 21"},
-	[9529082141] = {key = "NexaPremium_91F3YK69", issuedDate = "2025-10-26 12"},
-	[2314101743] = {key = "NexaPremium_U9IMV3YW", issuedDate = "2025-10-31 14"},
-	[9348359815] = {key = "NexaPremium_NX81SW8V", issuedDate = "2025-11-2 14"},
-	[8868906888] = {key = "NexaPremium_efewygwf", issuedDate = "2025-11-3 08"},
-	[9114573649] = {key = "NexaPremium_6V9GNUC1", issuedDate = "2025-11-4 18"},
-	[9383243342] = {key = "NexaPremium_P25P68X9", issuedDate = "2025-11-4 18"},
-	[8427443610] = {key = "NexaPremium_YF3D5B0T", issuedDate = "2025-11-5 17"},
-	[7962577003] = {key = "NexaPremium_R775Q6FY", issuedDate = "2025-11-5 17"},
+	[9464607503] = {key = "NexaPremium_dngffvefgefug", issuedDate = "2025-09-18 21"},
+	[1444873051] = {key = "NexaPremium_6DB404IG", issuedDate = "2025-09-20 21"},
+	[7854965065] = {key = "NexaPremium_91F3YK69", issuedDate = "2025-09-22 21"},
+	[9529082141] = {key = "NexaPremium_91F3YK69", issuedDate = "2025-09-26 12"},
+	[2314101743] = {key = "NexaPremium_U9IMV3YW", issuedDate = "2025-10-1 14"},
+	[9348359815] = {key = "NexaPremium_NX81SW8V", issuedDate = "2025-10-3 14"},
+	[8868906888] = {key = "NexaPremium_efewygwf", issuedDate = "2025-10-4 08"},
+	[9114573649] = {key = "NexaPremium_6V9GNUC1", issuedDate = "2025-10-5 18"},
+	[9383243342] = {key = "NexaPremium_P25P68X9", issuedDate = "2025-10-5 18"},
+	[8427443610] = {key = "NexaPremium_YF3D5B0T", issuedDate = "2025-10-6 17"},
+	[7962577003] = {key = "NexaPremium_R775Q6FY", issuedDate = "2025-10-6 17"},
 	[5464154339] = {key = "Owner", issuedDate = "Permanen"},
-	[5464154339] = {key = "1", issuedDate = "2025-11-5 17"},
+	[5464154339] = {key = "1", issuedDate = "2025-10-6 17"},
 	[8309797161] = {key = "Owner", issuedDate = "Permanen"},
 	[8823821635] = {key = "Owner", issuedDate = "Permanen"},
 }
 
 local expireAfter = 30 * 24 * 60 * 60 -- 30 hari
 
+--// UTILS
 local function parseDate(str)
 	if str == "Permanen" then return nil end
 	local y,m,d,h = str:match("(%d+)%-(%d+)%-(%d+) (%d+)")
-	return os.time({year=tonumber(y),month=tonumber(m),day=tonumber(d),hour=tonumber(h)})
+	return os.time({year=tonumber(y), month=tonumber(m), day=tonumber(d), hour=tonumber(h)})
 end
 
 local function formatRemaining(secs)
@@ -35,20 +36,14 @@ local function formatRemaining(secs)
 	local d = math.floor(secs/86400)
 	local h = math.floor((secs%86400)/3600)
 	local m = math.floor((secs%3600)/60)
-	return string.format("%d days %02d hrs %02d min",d,h,m)
+	return string.format("%d days %02d hrs %02d min", d, h, m)
 end
 
--- fungsi baru untuk menghitung tanggal expired yang fix 30 hari
 local function getExpiration(userData)
 	if not userData then return 0 end
-	if userData.issuedDate == "Permanen" then
-		return math.huge
-	end
+	if userData.issuedDate == "Permanen" then return math.huge end
 	local issued = parseDate(userData.issuedDate) or os.time()
-	if issued > os.time() then
-		issued = os.time() -- jika tanggal issued di masa depan, pakai waktu sekarang
-	end
-	return issued + expireAfter
+	return math.max(os.time(), issued) + expireAfter
 end
 
 --// GUI SETUP
@@ -57,8 +52,9 @@ if playerGui:FindFirstChild("KeyGui") then playerGui.KeyGui:Destroy() end
 local gui = Instance.new("ScreenGui", playerGui)
 gui.Name = "KeyGui"
 
+-- Main frame
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 520, 0, 230)
+frame.Size = UDim2.new(0,520,0,230)
 frame.Position = UDim2.new(0.5,0,0.5,0)
 frame.AnchorPoint = Vector2.new(0.5,0.5)
 frame.BackgroundColor3 = Color3.fromRGB(17,17,17)
@@ -66,8 +62,9 @@ frame.BorderColor3 = Color3.fromRGB(40,40,40)
 frame.BorderSizePixel = 1
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,6)
 
+-- Header
 local header = Instance.new("TextLabel", frame)
-header.Size = UDim2.new(1, -20, 0, 35)
+header.Size = UDim2.new(1,-20,0,35)
 header.Position = UDim2.new(0,10,0,5)
 header.BackgroundTransparency = 1
 header.Font = Enum.Font.Code
@@ -76,13 +73,15 @@ header.TextColor3 = Color3.fromRGB(255,130,0)
 header.TextXAlignment = Enum.TextXAlignment.Left
 header.Text = "Nexa Key System"
 
+-- Line
 local line = Instance.new("Frame", frame)
-line.Size = UDim2.new(1, -20, 0, 1)
+line.Size = UDim2.new(1,-20,0,1)
 line.Position = UDim2.new(0,10,0,40)
 line.BackgroundColor3 = Color3.fromRGB(40,40,40)
 
+-- Left panel (input)
 local leftPanel = Instance.new("Frame", frame)
-leftPanel.Size = UDim2.new(0.4, -10, 1, -60)
+leftPanel.Size = UDim2.new(0.4,-10,1,-60)
 leftPanel.Position = UDim2.new(0,10,0,50)
 leftPanel.BackgroundTransparency = 1
 
@@ -137,8 +136,9 @@ result.TextSize = 13
 result.TextColor3 = Color3.fromRGB(255,100,100)
 result.Text = ""
 
+-- Right panel (info)
 local rightPanel = Instance.new("Frame", frame)
-rightPanel.Size = UDim2.new(0.55, -10, 1, -60)
+rightPanel.Size = UDim2.new(0.55,-10,1,-60)
 rightPanel.Position = UDim2.new(0.45,10,0,50)
 rightPanel.BackgroundTransparency = 1
 
@@ -164,7 +164,7 @@ info2.TextWrapped = true
 info2.Text = "✦ How long does a key last?\n  Each key gives 30 days access to Nexa Premium."
 
 local footer = Instance.new("TextLabel", frame)
-footer.Size = UDim2.new(1, -20, 0, 20)
+footer.Size = UDim2.new(1,-20,0,20)
 footer.Position = UDim2.new(0,10,1,-25)
 footer.BackgroundTransparency = 1
 footer.Font = Enum.Font.Code
@@ -174,9 +174,7 @@ footer.Text = "Key System • v1.0.1 • discord.gg/ECxQFc97F5"
 
 --// NOTIFICATION FUNCTION
 local function ShowNotification(titleText, bodyText, duration)
-	if playerGui:FindFirstChild("TestNotify") then
-		playerGui.TestNotify:Destroy()
-	end
+	if playerGui:FindFirstChild("TestNotify") then playerGui.TestNotify:Destroy() end
 
 	local guiN = Instance.new("ScreenGui", playerGui)
 	guiN.Name = "TestNotify"
@@ -184,8 +182,8 @@ local function ShowNotification(titleText, bodyText, duration)
 	guiN.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 	local frameN = Instance.new("Frame", guiN)
-	frameN.Size = UDim2.new(0, 340, 0, 120)
-	frameN.Position = UDim2.new(0, -400, 0, 40)
+	frameN.Size = UDim2.new(0,340,0,120)
+	frameN.Position = UDim2.new(0,-400,0,40)
 	frameN.BackgroundColor3 = Color3.fromRGB(20,20,20)
 	frameN.BorderColor3 = Color3.fromRGB(50,50,50)
 	frameN.BackgroundTransparency = 0.1
@@ -193,13 +191,13 @@ local function ShowNotification(titleText, bodyText, duration)
 	Instance.new("UICorner", frameN).CornerRadius = UDim.new(0,6)
 
 	local underline = Instance.new("Frame", frameN)
-	underline.Size = UDim2.new(1, 0, 0, 2)
-	underline.Position = UDim2.new(0, 0, 1, -2)
+	underline.Size = UDim2.new(1,0,0,2)
+	underline.Position = UDim2.new(0,0,1,-2)
 	underline.BackgroundColor3 = Color3.fromRGB(255,130,0)
 	underline.BorderSizePixel = 0
 
 	local title = Instance.new("TextLabel", frameN)
-	title.Size = UDim2.new(1, -20, 0, 25)
+	title.Size = UDim2.new(1,-20,0,25)
 	title.Position = UDim2.new(0,10,0,10)
 	title.BackgroundTransparency = 1
 	title.Font = Enum.Font.Code
@@ -209,7 +207,7 @@ local function ShowNotification(titleText, bodyText, duration)
 	title.Text = titleText
 
 	local body = Instance.new("TextLabel", frameN)
-	body.Size = UDim2.new(1, -20, 0, 60)
+	body.Size = UDim2.new(1,-20,0,60)
 	body.Position = UDim2.new(0,10,0,35)
 	body.BackgroundTransparency = 1
 	body.Font = Enum.Font.Code
@@ -221,8 +219,8 @@ local function ShowNotification(titleText, bodyText, duration)
 	body.Text = bodyText
 
 	local button = Instance.new("TextButton", frameN)
-	button.Size = UDim2.new(0, 110, 0, 28)
-	button.Position = UDim2.new(0.5, -55, 1, -38)
+	button.Size = UDim2.new(0,110,0,28)
+	button.Position = UDim2.new(0.5,-55,1,-38)
 	button.BackgroundColor3 = Color3.fromRGB(35,35,35)
 	button.BorderColor3 = Color3.fromRGB(70,70,70)
 	button.Font = Enum.Font.Code
@@ -231,13 +229,8 @@ local function ShowNotification(titleText, bodyText, duration)
 	button.Text = "OK"
 	Instance.new("UICorner", button).CornerRadius = UDim.new(0,4)
 
-	TweenService:Create(frameN, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-		Position = UDim2.new(0, 20, 0, 40)
-	}):Play()
-
-	TweenService:Create(underline, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
-		Size = UDim2.new(0, 0, 0, 2)
-	}):Play()
+	TweenService:Create(frameN, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0,20,0,40)}):Play()
+	TweenService:Create(underline, TweenInfo.new(duration, Enum.EasingStyle.Linear), {Size = UDim2.new(0,0,0,2)}):Play()
 
 	button.MouseButton1Click:Connect(function()
 		TweenService:Create(frameN, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
@@ -247,7 +240,7 @@ local function ShowNotification(titleText, bodyText, duration)
 
 	task.delay(duration, function()
 		if guiN and guiN.Parent then
-			TweenService:Create(frameN, TweenInfo.new(0.4), {Position = UDim2.new(0, -400, 0, 40)}):Play()
+			TweenService:Create(frameN, TweenInfo.new(0.4), {Position = UDim2.new(0,-400,0,40)}):Play()
 			task.wait(0.4)
 			guiN:Destroy()
 		end
@@ -260,27 +253,30 @@ local expiredTimestamp = getExpiration(userData)
 
 enterBtn.MouseButton1Click:Connect(function()
 	local input = keyBox.Text
+
 	if not userData then
 		result.TextColor3 = Color3.fromRGB(255,100,100)
 		result.Text = "You are not Premium user."
 		return
-	end
-	if input == "" then
+	elseif input == "" then
 		result.TextColor3 = Color3.fromRGB(255,100,100)
 		result.Text = "Enter your key!"
 		return
+	elseif input ~= userData.key then
+		result.TextColor3 = Color3.fromRGB(255,0,0)
+		result.Text = "Invalid key!"
+		return
 	end
-	if input == userData.key then
-		local remainingTime = expiredTimestamp - os.time()
-		if remainingTime <= 0 then
-			result.TextColor3 = Color3.fromRGB(255,0,0)
-			result.Text = "Key expired!"
-			task.delay(1,function()
-				gui:Destroy()
-				ShowNotification("❌ Key Expired", "Your Nexa Premium key has expired.\nPlease renew to continue access.", 6)
-			end)
-			return
-		end
+
+	local remainingTime = expiredTimestamp - os.time()
+	if remainingTime <= 0 then
+		result.TextColor3 = Color3.fromRGB(255,0,0)
+		result.Text = "Key expired!"
+		task.delay(1, function()
+			gui:Destroy()
+			ShowNotification("❌ Key Expired", "Your Nexa Premium key has expired.\nPlease renew to continue access.", 6)
+		end)
+	else
 		result.TextColor3 = Color3.fromRGB(0,255,0)
 		result.Text = "Valid Key! Loading..."
 		task.delay(1, function()
@@ -290,9 +286,6 @@ enterBtn.MouseButton1Click:Connect(function()
 				loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
 			end)
 		end)
-	else
-		result.TextColor3 = Color3.fromRGB(255,0,0)
-		result.Text = "Invalid key!"
 	end
 end)
 
