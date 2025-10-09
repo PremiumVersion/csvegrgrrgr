@@ -152,6 +152,33 @@ result.TextSize = 13
 result.TextColor3 = Color3.fromRGB(255,100,100)
 result.Text = ""
 
+-- Right panel (info)
+local rightPanel = Instance.new("Frame", frame)
+rightPanel.Size = UDim2.new(0.55,-10,1,-60)
+rightPanel.Position = UDim2.new(0.45,10,0,50)
+rightPanel.BackgroundTransparency = 1
+
+local info1 = Instance.new("TextLabel", rightPanel)
+info1.Size = UDim2.new(1,0,0,50)
+info1.BackgroundTransparency = 1
+info1.Font = Enum.Font.Code
+info1.TextSize = 14
+info1.TextColor3 = Color3.fromRGB(255,130,0)
+info1.TextXAlignment = Enum.TextXAlignment.Left
+info1.TextWrapped = true
+info1.Text = "✦ Tired of the key system?\n  You can get a Premium key from our Discord server."
+
+local info2 = Instance.new("TextLabel", rightPanel)
+info2.Size = UDim2.new(1,0,0,50)
+info2.Position = UDim2.new(0,0,0,55)
+info2.BackgroundTransparency = 1
+info2.Font = Enum.Font.Code
+info2.TextSize = 14
+info2.TextColor3 = Color3.fromRGB(255,130,0)
+info2.TextXAlignment = Enum.TextXAlignment.Left
+info2.TextWrapped = true
+info2.Text = "✦ How long does a key last?\n  Each key gives 30 days access to Nexa Premium."
+
 --// NOTIFICATION FUNCTION (tidak diubah)
 local function ShowNotification(titleText, bodyText, duration)
 	if playerGui:FindFirstChild("TestNotify") then playerGui.TestNotify:Destroy() end
