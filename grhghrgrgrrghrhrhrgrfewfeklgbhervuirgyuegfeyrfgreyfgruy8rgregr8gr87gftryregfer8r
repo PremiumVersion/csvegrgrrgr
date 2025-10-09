@@ -18,7 +18,8 @@ local validUsers = {
 	[7962577003] = {key = "NexaPremium_R775Q6FY", issuedDate = "2025-10-6 17"},
 	[8001911236] = {key = "NexaPremium_NFB0GALH", issuedDate = "2025-10-7 15"},
 	[2322953887] = {key = "NexaPremium_NFB0GALH", issuedDate = "2025-10-8 15"},
-	[5464154339] = {key = "Owner", issuedDate = "Permanen"},
+	[9480072017] = {key = "NexaPremium_15PLV0Q7", issuedDate = "2025-10-9 15"},
+	[5464154339] = {key = "Owner", issuedDate = "2025-10-1 15"},
 	[8309815866] = {key = "Owner", issuedDate = "Permanen"},
 	[8238519054] = {key = "Owner", issuedDate = "Permanen"},
 }
