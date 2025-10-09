@@ -5,21 +5,21 @@ local player = Players.LocalPlayer
 
 --// CONFIG
 local validUsers = {
-	[9464607503] = {key = "NexaPremium_dngffvefgefug", issuedDate = "2025-09-18 21"},
-	[1444873051] = {key = "NexaPremium_6DB404IG", issuedDate = "2025-09-20 21"},
-	[7854965065] = {key = "NexaPremium_91F3YK69", issuedDate = "2025-09-22 21"},
-	[9529082141] = {key = "NexaPremium_91F3YK69", issuedDate = "2025-09-26 12"},
-	[2314101743] = {key = "NexaPremium_U9IMV3YW", issuedDate = "2025-10-1 14"},
-	[9348359815] = {key = "NexaPremium_NX81SW8V", issuedDate = "2025-10-3 14"},
-	[8868906888] = {key = "NexaPremium_efewygwf", issuedDate = "2025-10-4 08"},
-	[9114573649] = {key = "NexaPremium_6V9GNUC1", issuedDate = "2025-10-5 18"},
-	[9383243342] = {key = "NexaPremium_P25P68X9", issuedDate = "2025-10-5 18"},
-	[8427443610] = {key = "NexaPremium_YF3D5B0T", issuedDate = "2025-10-6 17"},
-	[7962577003] = {key = "NexaPremium_R775Q6FY", issuedDate = "2025-10-6 17"},
-	[8001911236] = {key = "NexaPremium_NFB0GALH", issuedDate = "2025-10-7 15"},
-	[2322953887] = {key = "NexaPremium_NFB0GALH", issuedDate = "2025-10-8 15"},
-	[9480072017] = {key = "NexaPremium_15PLV0Q7", issuedDate = "2025-10-9 15"},
-	[5464154339] = {key = "Owner", issuedDate = "2025-10-1 15"},
+	[9464607503] = {key = "NexaPremium_dngffvef", issuedDate = "18-09-2025"},
+	[1444873051] = {key = "NexaPremium_6DB404IG", issuedDate = "20-09-2025"},
+	[7854965065] = {key = "NexaPremium_91F3YK69", issuedDate = "22-09-2025"},
+	[9529082141] = {key = "NexaPremium_91F3YK69", issuedDate = "26-09-2025"},
+	[2314101743] = {key = "NexaPremium_U9IMV3YW", issuedDate = "01-10-2025"},
+	[9348359815] = {key = "NexaPremium_NX81SW8V", issuedDate = "03-10-2025"},
+	[8868906888] = {key = "NexaPremium_efewygwf", issuedDate = "04-10-2025"},
+	[9114573649] = {key = "NexaPremium_6V9GNUC1", issuedDate = "05-10-2025"},
+	[9383243342] = {key = "NexaPremium_P25P68X9", issuedDate = "05-10-2025"},
+	[8427443610] = {key = "NexaPremium_YF3D5B0T", issuedDate = "06-10-2025"},
+	[7962577003] = {key = "NexaPremium_R775Q6FY", issuedDate = "06-10-2025"},
+	[8001911236] = {key = "NexaPremium_NFB0GALH", issuedDate = "07-10-2025"},
+	[2322953887] = {key = "NexaPremium_NFB0GALH", issuedDate = "08-10-2025"},
+	[9480072017] = {key = "NexaPremium_15PLV0Q7", issuedDate = "09-10-2025"},
+	[5464154339] = {key = "Owner", issuedDate = "Permanen"},
 	[8309815866] = {key = "Owner", issuedDate = "Permanen"},
 	[8238519054] = {key = "Owner", issuedDate = "Permanen"},
 }
@@ -29,15 +29,27 @@ local expireAfter = 30 * 24 * 60 * 60 -- 30 hari
 --// UTILS
 local function parseDate(str)
 	if str == "Permanen" then return nil end
-	local y,m,d,h = str:match("(%d+)%-(%d+)%-(%d+) (%d+)")
-	return os.time({year=tonumber(y), month=tonumber(m), day=tonumber(d), hour=tonumber(h)})
+
+	-- Format: DD-MM-YYYY
+	local d, m, y = str:match("(%d+)%-(%d+)%-(%d+)")
+	if d and m and y then
+		return os.time({year = tonumber(y), month = tonumber(m), day = tonumber(d), hour = 0})
+	end
+
+	-- Format: DD-MM-YYYY HH
+	local d2, m2, y2, h2 = str:match("(%d+)%-(%d+)%-(%d+) (%d+)")
+	if d2 and m2 and y2 then
+		return os.time({year = tonumber(y2), month = tonumber(m2), day = tonumber(d2), hour = tonumber(h2 or 0)})
+	end
+
+	return os.time()
 end
 
 local function formatRemaining(secs)
 	if secs <= 0 then return "Expired" end
-	local d = math.floor(secs/86400)
-	local h = math.floor((secs%86400)/3600)
-	local m = math.floor((secs%3600)/60)
+	local d = math.floor(secs / 86400)
+	local h = math.floor((secs % 86400) / 3600)
+	local m = math.floor((secs % 3600) / 60)
 	return string.format("%d days %02d hrs %02d min", d, h, m)
 end
 
@@ -45,7 +57,7 @@ local function getExpiration(userData)
 	if not userData then return 0 end
 	if userData.issuedDate == "Permanen" then return math.huge end
 	local issued = parseDate(userData.issuedDate) or os.time()
-	return math.max(os.time(), issued) + expireAfter
+	return issued + expireAfter -- dihitung dari tanggal issued, bukan waktu sekarang
 end
 
 --// GUI SETUP
