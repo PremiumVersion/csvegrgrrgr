@@ -100,137 +100,104 @@ local function ShowNotification(titleText, bodyText, duration)
 	task.delay(duration, function() if guiN and guiN.Parent then guiN:Destroy() end end)
 end
 
---// MAIN LOGIC
+--// MAIN
 local userData = validUsers[player.UserId]
 local expiredTimestamp = getExpiration(userData)
-local autoKey = rawget(getfenv(), "script_key")
+local autoKey = rawget(getfenv(), "script_key") -- ambil variabel global script_key
 
--- AUTO LOGIN MODE (kalau key langsung di script)
+-- AUTO LOGIN
 if userData and autoKey and autoKey == userData.key then
-	local remainingTime = expiredTimestamp - os.time()
-	if remainingTime <= 0 and userData.issuedDate ~= "Permanen" then
-		ShowNotification("❌ Key Expired", "Your Nexa Premium key has expired.\nYou’ll be redirected to Free version.", 6)
-		task.wait(2)
-		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/Gato290/Script/refs/heads/main/Nexa%20Free"))()
-		end)
-		return
-	end
+	local remaining = expiredTimestamp - os.time()
 
 	if userData.issuedDate == "Permanen" then
 		ShowNotification("💎 Nexa Lifetime", "Welcome Owner!\nYou have unlimited access (Lifetime).", 6)
-	else
-		ShowNotification("✅ Nexa Premium", "Welcome Premium User!\nRemaining Access: " .. formatRemaining(remainingTime), 6)
-	end
-	task.wait(1)
-	pcall(function()
+		task.wait(1)
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
-	end)
+		return
+	end
+
+	if remaining <= 0 then
+		ShowNotification("❌ Key Expired", "Your Nexa Premium key has expired.\nLoading Free Script...", 6)
+		task.wait(1)
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gato290/Script/refs/heads/main/Nexa%20Free"))()
+		return
+	end
+
+	ShowNotification("✅ Nexa Premium", "Welcome Premium User!\nRemaining Access: " .. formatRemaining(remaining), 6)
+	task.wait(1)
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
 	return
 end
 
--- Kalau tidak punya key langsung → GUI muncul
+-- Jika tidak ada script_key → lanjut ke GUI
 local playerGui = player:WaitForChild("PlayerGui")
 if playerGui:FindFirstChild("KeyGui") then playerGui.KeyGui:Destroy() end
 local gui = Instance.new("ScreenGui", playerGui)
 gui.Name = "KeyGui"
 
+-- GUI sederhana (judul + input key)
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0,520,0,230)
+frame.Size = UDim2.new(0,500,0,180)
 frame.Position = UDim2.new(0.5,0,0.5,0)
 frame.AnchorPoint = Vector2.new(0.5,0.5)
 frame.BackgroundColor3 = Color3.fromRGB(17,17,17)
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,6)
 
-local header = Instance.new("TextLabel", frame)
-header.Size = UDim2.new(1,-20,0,35)
-header.Position = UDim2.new(0,10,0,5)
-header.BackgroundTransparency = 1
-header.Font = Enum.Font.Code
-header.TextSize = 20
-header.TextColor3 = Color3.fromRGB(255,130,0)
-header.TextXAlignment = Enum.TextXAlignment.Left
-header.Text = "Nexa Key System"
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1,0,0,40)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.Code
+title.TextSize = 20
+title.TextColor3 = Color3.fromRGB(255,130,0)
+title.Text = "Nexa Key System"
 
-local keyBox = Instance.new("TextBox", frame)
-keyBox.Size = UDim2.new(0.9,0,0,30)
-keyBox.Position = UDim2.new(0.05,0,0.4,0)
-keyBox.BackgroundColor3 = Color3.fromRGB(26,26,26)
-keyBox.PlaceholderText = "Enter your key here.."
-keyBox.Font = Enum.Font.Code
-keyBox.TextColor3 = Color3.fromRGB(255,255,255)
-Instance.new("UICorner", keyBox).CornerRadius = UDim.new(0,4)
+local box = Instance.new("TextBox", frame)
+box.Size = UDim2.new(0.8,0,0,30)
+box.Position = UDim2.new(0.1,0,0,60)
+box.PlaceholderText = "Enter your key here..."
+box.Font = Enum.Font.Code
+box.TextColor3 = Color3.new(1,1,1)
+box.BackgroundColor3 = Color3.fromRGB(26,26,26)
+Instance.new("UICorner", box).CornerRadius = UDim.new(0,4)
 
-local enterBtn = Instance.new("TextButton", frame)
-enterBtn.Size = UDim2.new(0.9,0,0,30)
-enterBtn.Position = UDim2.new(0.05,0,0.6,0)
-enterBtn.BackgroundColor3 = Color3.fromRGB(38,38,38)
-enterBtn.Text = "Enter"
-enterBtn.Font = Enum.Font.Code
-enterBtn.TextColor3 = Color3.fromRGB(220,220,220)
-Instance.new("UICorner", enterBtn).CornerRadius = UDim.new(0,4)
+local button = Instance.new("TextButton", frame)
+button.Size = UDim2.new(0.8,0,0,28)
+button.Position = UDim2.new(0.1,0,0,100)
+button.Text = "Enter"
+button.Font = Enum.Font.Code
+button.BackgroundColor3 = Color3.fromRGB(38,38,38)
+button.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", button).CornerRadius = UDim.new(0,4)
 
-local freeBtn = Instance.new("TextButton", frame)
-freeBtn.Size = UDim2.new(0.9,0,0,28)
-freeBtn.Position = UDim2.new(0.05,0,0.75,0)
-freeBtn.BackgroundColor3 = Color3.fromRGB(38,38,38)
-freeBtn.Text = "Use Free Script"
-freeBtn.Font = Enum.Font.Code
-freeBtn.TextColor3 = Color3.fromRGB(220,220,220)
-Instance.new("UICorner", freeBtn).CornerRadius = UDim.new(0,4)
+local label = Instance.new("TextLabel", frame)
+label.Size = UDim2.new(1,0,0,30)
+label.Position = UDim2.new(0,0,0,135)
+label.BackgroundTransparency = 1
+label.Font = Enum.Font.Code
+label.TextSize = 14
+label.TextColor3 = Color3.fromRGB(255,80,80)
+label.Text = ""
 
-local result = Instance.new("TextLabel", frame)
-result.Size = UDim2.new(1,0,0,25)
-result.Position = UDim2.new(0,0,0.88,0)
-result.BackgroundTransparency = 1
-result.Font = Enum.Font.Code
-result.TextSize = 13
-result.TextColor3 = Color3.fromRGB(255,100,100)
-result.Text = ""
-
--- Tombol Enter ditekan
-enterBtn.MouseButton1Click:Connect(function()
-	local input = keyBox.Text
+button.MouseButton1Click:Connect(function()
+	local key = box.Text
 	if not userData then
-		result.Text = "You are not Premium user."
-		return
-	elseif input == "" then
-		result.Text = "Enter your key!"
-		return
-	elseif input ~= userData.key then
-		result.Text = "Invalid key!"
-		return
-	end
-
-	local remainingTime = expiredTimestamp - os.time()
-	if remainingTime <= 0 then
-		result.Text = "Key expired!"
-		task.delay(1, function()
-			gui:Destroy()
-			ShowNotification("❌ Key Expired", "Your Nexa Premium key has expired.", 6)
-		end)
+		label.Text = "You are not Premium user."
+	elseif key == "" then
+		label.Text = "Enter your key!"
+	elseif key ~= userData.key then
+		label.Text = "Invalid key!"
 	else
-		result.TextColor3 = Color3.fromRGB(0,255,0)
-		result.Text = "Valid Key! Loading..."
-		task.delay(1, function()
-			gui:Destroy()
-			ShowNotification("✅ Nexa Premium", "Welcome Premium User!\nRemaining Access: " .. formatRemaining(remainingTime), 6)
-			pcall(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
-			end)
-		end)
-	end
-end)
-
--- Tombol Free ditekan
-freeBtn.MouseButton1Click:Connect(function()
-	result.TextColor3 = Color3.fromRGB(0,255,0)
-	result.Text = "Loading Free Script..."
-	task.delay(1, function()
+		local remaining = expiredTimestamp - os.time()
 		gui:Destroy()
-		ShowNotification("💡 Free Script Loaded", "You're using the Free version of Nexa.", 6)
-		pcall(function()
+		if userData.issuedDate == "Permanen" then
+			ShowNotification("💎 Nexa Lifetime", "Welcome Owner!\nYou have unlimited access (Lifetime).", 6)
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
+		elseif remaining <= 0 then
+			ShowNotification("❌ Key Expired", "Your Nexa Premium key has expired.\nLoading Free Script...", 6)
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/Gato290/Script/refs/heads/main/Nexa%20Free"))()
-		end)
-	end)
+		else
+			ShowNotification("✅ Nexa Premium", "Welcome Premium User!\nRemaining Access: " .. formatRemaining(remaining), 6)
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
+		end
+	end
 end)
