@@ -20,6 +20,7 @@ local validUsers = {
 	[2322953887] = {key = "NexaPremium_NFB0GALH", issuedDate = "08-10-2025"},
 	[9480072017] = {key = "NexaPremium_15PLV0Q7", issuedDate = "09-10-2025"},
 	[5464154339] = {key = "Owner", issuedDate = "Permanen"},
+	[7507528154] = {key = "One1", issuedDate = "11-10-2025"},
 	[8309815866] = {key = "Owner", issuedDate = "Permanen"},
 	[8238519054] = {key = "Owner", issuedDate = "Permanen"},
 }
