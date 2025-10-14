@@ -335,7 +335,7 @@ enterBtn.MouseButton1Click:Connect(function()
 		result.Text = "Lifetime Access Granted!"
 		task.delay(1, function()
 			gui:Destroy()
-			ShowNotification("💎 Nexa Lifetime", "Welcome Owner!\nYou have unlimited access (Lifetime).", 6)
+			ShowNotification("💎 Nexa Lifetime", "Welcome User!\nYou have unlimited access (Lifetime).", 6)
 			pcall(function()
 				loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
 			end)
