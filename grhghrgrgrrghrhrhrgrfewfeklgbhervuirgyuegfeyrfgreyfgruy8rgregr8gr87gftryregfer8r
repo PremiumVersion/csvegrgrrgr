@@ -20,7 +20,6 @@ local validUsers = {
 	[2322953887] = {key = "NexaPremium_NFB0GALH", issuedDate = "08-10-2025"},
 	[9480072017] = {key = "NexaPremium_15PLV0Q7", issuedDate = "09-10-2025"},
 	[9312857030] = {key = "NexaPremium_M48NWY9W", issuedDate = "12-10-2025"},
-	[] = {key = "", issuedDate = "Permanen"},
 	[5464154339] = {key = "Owner", issuedDate = "Permanen"},
 	[7507528154] = {key = "One1", issuedDate = "11-10-2025"},
 	[8309815866] = {key = "Owner", issuedDate = "Permanen"},
@@ -336,7 +335,7 @@ enterBtn.MouseButton1Click:Connect(function()
 		result.Text = "Lifetime Access Granted!"
 		task.delay(1, function()
 			gui:Destroy()
-			ShowNotification("💎 Nexa Lifetime", "Welcome User !\nYou have unlimited access (Lifetime).", 6)
+			ShowNotification("💎 Nexa Lifetime", "Welcome Owner!\nYou have unlimited access (Lifetime).", 6)
 			pcall(function()
 				loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
 			end)
