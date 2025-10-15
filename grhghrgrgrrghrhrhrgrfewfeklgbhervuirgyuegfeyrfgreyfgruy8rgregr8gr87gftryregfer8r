@@ -3,24 +3,28 @@ local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
---// CONFIG (Sekarang key bisa punya banyak user)
-local validKeys = {
-	["NexaPremium_dngffvef"] = {users = {9464607503}, issuedDate = "18-09-2025"},
-	["NexaPremium_6DB404IG"] = {users = {1444873051}, issuedDate = "20-09-2025"},
-	["NexaPremium_91F3YK69"] = {users = {7854965065, 9529082141}, issuedDate = "22-09-2025"},
-	["NexaPremium_U9IMV3YW"] = {users = {2314101743}, issuedDate = "01-10-2025"},
-	["NexaPremium_NX81SW8V"] = {users = {9348359815}, issuedDate = "03-10-2025"},
-	["NexaPremium_efewygwf"] = {users = {8868906888}, issuedDate = "04-10-2025"},
-	["NexaPremium_6V9GNUC1"] = {users = {9114573649}, issuedDate = "05-10-2025"},
-	["NexaPremium_P25P68X9"] = {users = {9383243342}, issuedDate = "05-10-2025"},
-	["NexaPremium_YF3D5B0T"] = {users = {8427443610}, issuedDate = "06-10-2025"},
-	["NexaPremium_R775Q6FY"] = {users = {7962577003}, issuedDate = "06-10-2025"},
-	["NexaPremium_NFB0GALH"] = {users = {8001911236, 2322953887}, issuedDate = "07-10-2025"},
-	["NexaPremium_15PLV0Q7"] = {users = {9480072017}, issuedDate = "09-10-2025"},
-	["NexaPremium_M48NWY9W"] = {users = {9312857030}, issuedDate = "12-10-2025"},
-	["NexaPremium_CGBC6AH7"] = {users = {9576768452}, issuedDate = "Permanen"},
-	["Owner"] = {users = {5464154339, 8309815866, 8238519054, 8823821635}, issuedDate = "Permanen"},
-	["One1"] = {users = {7507528154}, issuedDate = "11-10-2025"},
+--// CONFIG
+local validUsers = {
+	[9464607503] = {key = "NexaPremium_dngffvef", issuedDate = "18-09-2025"},
+	[1444873051] = {key = "NexaPremium_6DB404IG", issuedDate = "20-09-2025"},
+	[7854965065] = {key = "NexaPremium_91F3YK69", issuedDate = "22-09-2025"},
+	[9529082141] = {key = "NexaPremium_91F3YK69", issuedDate = "26-09-2025"},
+	[2314101743] = {key = "NexaPremium_U9IMV3YW", issuedDate = "01-10-2025"},
+	[9348359815] = {key = "NexaPremium_NX81SW8V", issuedDate = "03-10-2025"},
+	[8868906888] = {key = "NexaPremium_efewygwf", issuedDate = "04-10-2025"},
+	[9114573649] = {key = "NexaPremium_6V9GNUC1", issuedDate = "05-10-2025"},
+	[9383243342] = {key = "NexaPremium_P25P68X9", issuedDate = "05-10-2025"},
+	[8427443610] = {key = "NexaPremium_YF3D5B0T", issuedDate = "06-10-2025"},
+	[7962577003] = {key = "NexaPremium_R775Q6FY", issuedDate = "06-10-2025"},
+	[8001911236] = {key = "NexaPremium_NFB0GALH", issuedDate = "07-10-2025"},
+	[2322953887] = {key = "NexaPremium_NFB0GALH", issuedDate = "08-10-2025"},
+	[9480072017] = {key = "NexaPremium_15PLV0Q7", issuedDate = "09-10-2025"},
+	[9312857030] = {key = "NexaPremium_M48NWY9W", issuedDate = "12-10-2025"},
+	[9576768452] = {key = "NexaPremium_CGBC6AH7", issuedDate = "Permanen"},
+	[5464154339] = {key = "Owner", issuedDate = "Permanen"},
+	[7507528154] = {key = "One1", issuedDate = "11-10-2025"},
+	[8309815866] = {key = "Owner", issuedDate = "Permanen"},
+	[8238519054] = {key = "Owner", issuedDate = "Permanen"},
 }
 
 local expireAfter = 30 * 24 * 60 * 60 -- 30 hari
@@ -44,23 +48,11 @@ local function formatRemaining(secs)
 	return string.format("%d days %02d hrs %02d min", d, h, m)
 end
 
-local function getExpiration(data)
-	if not data then return 0 end
-	if data.issuedDate == "Permanen" then return math.huge end
-	local issued = parseDate(data.issuedDate) or os.time()
+local function getExpiration(userData)
+	if not userData then return 0 end
+	if userData.issuedDate == "Permanen" then return math.huge end
+	local issued = parseDate(userData.issuedDate) or os.time()
 	return issued + expireAfter
-end
-
--- Fungsi untuk cek apakah player termasuk dalam key tersebut
-local function findUserKey(userId)
-	for key, data in pairs(validKeys) do
-		for _, uid in ipairs(data.users) do
-			if uid == userId then
-				return key, data
-			end
-		end
-	end
-	return nil, nil
 end
 
 --// NOTIFICATION
@@ -112,12 +104,12 @@ local function ShowNotification(titleText, bodyText, duration)
 end
 
 --// MAIN
-local userKey, userData = findUserKey(player.UserId)
-local autoKey = rawget(getfenv(), "script_key")
+local userData = validUsers[player.UserId]
+local expiredTimestamp = getExpiration(userData)
+local autoKey = rawget(getfenv(), "script_key") -- cari variabel global script_key
 
--- Auto key validasi langsung
-if userKey and autoKey and autoKey == userKey then
-	local expiredTimestamp = getExpiration(userData)
+-- Jika user punya key langsung di script
+if userData and autoKey and autoKey == userData.key then
 	local remainingTime = expiredTimestamp - os.time()
 	if userData.issuedDate == "Permanen" then
 		ShowNotification("💎 Nexa Lifetime", "Welcome Owner!\nYou have unlimited access (Lifetime).", 6)
@@ -128,11 +120,8 @@ if userKey and autoKey and autoKey == userKey then
 	pcall(function()
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
 	end)
-	return
+	return -- skip GUI sepenuhnya
 end
-
--- GUI tetap sama (tidak diubah dari scriptmu)
-
 
 -- Jika tidak ada auto key, lanjut ke GUI input seperti biasa
 local playerGui = player:WaitForChild("PlayerGui")
