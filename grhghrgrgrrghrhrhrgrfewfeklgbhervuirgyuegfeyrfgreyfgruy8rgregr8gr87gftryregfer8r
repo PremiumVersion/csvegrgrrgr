@@ -3,7 +3,7 @@ local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
---// CONFIG
+--// CONFIG (Daftar user premium)
 local validUsers = {
 	[9464607503] = {key = "NexaPremium_dngffvef", issuedDate = "18-09-2025"},
 	[1444873051] = {key = "NexaPremium_6DB404IG", issuedDate = "20-09-2025"},
@@ -27,7 +27,7 @@ local validUsers = {
 	[8238519054] = {key = "Owner", issuedDate = "Permanen"},
 }
 
-local expireAfter = 30 * 24 * 60 * 60
+local expireAfter = 30 * 24 * 60 * 60 -- 30 hari
 
 --// UTILS
 local function parseDate(str)
@@ -55,6 +55,7 @@ local function getExpiration(userData)
 	return issued + expireAfter
 end
 
+--// NOTIFICATION
 local function ShowNotification(text)
 	local playerGui = player:WaitForChild("PlayerGui")
 	if playerGui:FindFirstChild("NexaNotify") then playerGui.NexaNotify:Destroy() end
@@ -91,7 +92,24 @@ end
 --// MAIN
 local userData = validUsers[player.UserId]
 local expiredTimestamp = getExpiration(userData)
+local autoKey = rawget(getfenv(), "script_key")
 
+-- AUTO KEY BYPASS
+if userData and autoKey and autoKey == userData.key then
+	local remainingTime = expiredTimestamp - os.time()
+	if userData.issuedDate == "Permanen" then
+		ShowNotification("💎 Welcome back, Lifetime User!")
+	else
+		ShowNotification("✅ Premium Access: " .. formatRemaining(remainingTime))
+	end
+	task.wait(1)
+	pcall(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
+	end)
+	return
+end
+
+--// SIMPLE GUI
 local playerGui = player:WaitForChild("PlayerGui")
 if playerGui:FindFirstChild("KeyGui") then playerGui.KeyGui:Destroy() end
 
@@ -105,6 +123,8 @@ frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 frame.BorderColor3 = Color3.fromRGB(50, 50, 50)
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+
+TweenService:Create(frame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, 0, 0.5, -5)}):Play()
 
 local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.new(1, 0, 0, 30)
@@ -152,13 +172,13 @@ Instance.new("UICorner", freeBtn).CornerRadius = UDim.new(0, 4)
 enterBtn.MouseButton1Click:Connect(function()
 	local input = keyBox.Text
 	if not userData then
-		ShowNotification("❌ You're not Premium user.")
+		ShowNotification("❌ You are not a Premium user.")
 		return
 	elseif input == "" then
 		ShowNotification("⚠️ Please enter your key.")
 		return
 	elseif input ~= userData.key then
-		ShowNotification("❌ Invalid key!")
+		ShowNotification("❌ Invalid key.")
 		return
 	end
 
@@ -166,16 +186,18 @@ enterBtn.MouseButton1Click:Connect(function()
 	if userData.issuedDate == "Permanen" then
 		gui:Destroy()
 		ShowNotification("💎 Lifetime Access Granted!")
+		task.wait(1)
 		pcall(function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
 		end)
 	else
 		if remaining <= 0 then
-			ShowNotification("⏰ Your key expired!")
+			ShowNotification("⏰ Your key has expired.")
 			return
 		else
 			gui:Destroy()
-			ShowNotification("✅ Access Granted! Remaining: " .. formatRemaining(remaining))
+			ShowNotification("✅ Premium Access: " .. formatRemaining(remaining))
+			task.wait(1)
 			pcall(function()
 				loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
 			end)
@@ -185,7 +207,8 @@ end)
 
 freeBtn.MouseButton1Click:Connect(function()
 	gui:Destroy()
-	ShowNotification("💡 Free Script Loaded.")
+	ShowNotification("💡 Loading Free Script...")
+	task.wait(1)
 	pcall(function()
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gato290/Script/refs/heads/main/Nexa%20Free"))()
 	end)
