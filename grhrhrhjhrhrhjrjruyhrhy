@@ -4,9 +4,28 @@ local player = Players.LocalPlayer
 
 -- Masukkan UserId yang diizinkan (contoh)
 local ALLOWED_IDS = {
-    12345678, -- ganti dengan UserId asli
-    87654321  -- tambah sesuai kebutuhan
+	9464607503,
+	1444873051,
+	7854965065,
+	9529082141,
+	2314101743,
+	9348359815,
+	8868906888,
+	9114573649,
+	9383243342,
+	8427443610,
+	7962577003,
+	8001911236,
+	2322953887,
+	9480072017,
+	9312857030,
+	9576768452,
+	5464154339,
+	7507528154,
+	8309815866,
+	8238519054
 }
+
 
 local function isAllowed(id)
     for _, v in ipairs(ALLOWED_IDS) do
