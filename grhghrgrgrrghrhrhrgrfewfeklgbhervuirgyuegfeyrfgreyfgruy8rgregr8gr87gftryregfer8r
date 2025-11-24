@@ -30,7 +30,7 @@ local validUsers = {
 
 local expireAfter = 30 * 24 * 60 * 60 -- 30 hari
 
---// UTILS
+--// UTILITIES
 local function parseDate(str)
 	if str == "Permanen" then return nil end
 	local d, m, y = str:match("(%d+)%-(%d+)%-(%d+)")
@@ -52,8 +52,7 @@ end
 local function getExpiration(userData)
 	if not userData then return 0 end
 	if userData.issuedDate == "Permanen" then return math.huge end
-	local issued = parseDate(userData.issuedDate) or os.time()
-	return issued + expireAfter
+	return parseDate(userData.issuedDate) + expireAfter
 end
 
 --// NOTIFICATION
@@ -70,7 +69,7 @@ local function ShowNotification(text)
 	frame.AnchorPoint = Vector2.new(0.5, 0)
 	frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 	frame.BorderColor3 = Color3.fromRGB(60, 60, 60)
-	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 6)
+	Instance.new("UICorner", frame)
 
 	local label = Instance.new("TextLabel", frame)
 	label.Size = UDim2.new(1, -20, 1, 0)
@@ -82,27 +81,36 @@ local function ShowNotification(text)
 	label.TextColor3 = Color3.fromRGB(255, 130, 0)
 	label.Text = text
 
-	TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Position = UDim2.new(0.5, 0, 0, 40)}):Play()
-	task.delay(3, function()
-		TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Position = UDim2.new(0.5, 0, 0, -80)}):Play()
+	TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {
+		Position = UDim2.new(0.5, 0, 0, 40)
+	}):Play()
+
+	task.delay(2, function()
+		TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {
+			Position = UDim2.new(0.5, 0, 0, -80)
+		}):Play()
 		task.wait(0.3)
 		gui:Destroy()
 	end)
 end
 
---// MAIN
+--// MAIN LOGIC
 local userData = validUsers[player.UserId]
-local expiredTimestamp = getExpiration(userData)
-local autoKey = rawget(getfenv(), "script_key")
 
--- AUTO KEY BYPASS
-if userData and autoKey and autoKey == userData.key then
-	local remainingTime = expiredTimestamp - os.time()
-	if userData.issuedDate == "Permanen" then
-		ShowNotification("💎 Welcome back, Lifetime User!")
-	else
-		ShowNotification("✅ Premium Access: " .. formatRemaining(remainingTime))
-	end
+-- NOT IN LIST → NOTIF → KICK
+if not userData then
+	ShowNotification("❌ You are not a Premium user.")
+	task.wait(2)
+	player:Kick("❌ You are not a whitelisted Premium user.")
+	return
+end
+
+local expiredTimestamp = getExpiration(userData)
+local remaining = expiredTimestamp - os.time()
+
+-- PERMANENT USER
+if userData.issuedDate == "Permanen" then
+	ShowNotification("💎 Lifetime Access Granted!")
 	task.wait(1)
 	pcall(function()
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
@@ -110,107 +118,17 @@ if userData and autoKey and autoKey == userData.key then
 	return
 end
 
---// SIMPLE GUI
-local playerGui = player:WaitForChild("PlayerGui")
-if playerGui:FindFirstChild("KeyGui") then playerGui.KeyGui:Destroy() end
+-- EXPIRED → NOTIF → KICK
+if remaining <= 0 then
+	ShowNotification("⏰ Your Premium Access Has Expired.")
+	task.wait(2)
+	player:Kick("⏰ Your Premium Access Has Expired. Renew to continue using the script.")
+	return
+end
 
-local gui = Instance.new("ScreenGui", playerGui)
-gui.Name = "KeyGui"
-
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 350, 0, 180)
-frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-frame.AnchorPoint = Vector2.new(0.5, 0.5)
-frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-frame.BorderColor3 = Color3.fromRGB(50, 50, 50)
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
-
-TweenService:Create(frame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, 0, 0.5, -5)}):Play()
-
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 30)
-title.Position = UDim2.new(0, 0, 0, 10)
-title.BackgroundTransparency = 1
-title.Font = Enum.Font.Code
-title.TextSize = 18
-title.TextColor3 = Color3.fromRGB(255, 130, 0)
-title.Text = "Nexa Key System"
-
-local keyBox = Instance.new("TextBox", frame)
-keyBox.Size = UDim2.new(1, -40, 0, 30)
-keyBox.Position = UDim2.new(0, 20, 0, 55)
-keyBox.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
-keyBox.BorderColor3 = Color3.fromRGB(70, 70, 70)
-keyBox.PlaceholderText = "Enter your key..."
-keyBox.Font = Enum.Font.Code
-keyBox.TextSize = 14
-keyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-Instance.new("UICorner", keyBox).CornerRadius = UDim.new(0, 4)
-
-local enterBtn = Instance.new("TextButton", frame)
-enterBtn.Size = UDim2.new(1, -40, 0, 28)
-enterBtn.Position = UDim2.new(0, 20, 0, 95)
-enterBtn.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
-enterBtn.BorderColor3 = Color3.fromRGB(80, 80, 80)
-enterBtn.Font = Enum.Font.Code
-enterBtn.TextSize = 14
-enterBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-enterBtn.Text = "Enter Key"
-Instance.new("UICorner", enterBtn).CornerRadius = UDim.new(0, 4)
-
-local freeBtn = Instance.new("TextButton", frame)
-freeBtn.Size = UDim2.new(1, -40, 0, 28)
-freeBtn.Position = UDim2.new(0, 20, 0, 130)
-freeBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-freeBtn.BorderColor3 = Color3.fromRGB(70, 70, 70)
-freeBtn.Font = Enum.Font.Code
-freeBtn.TextSize = 14
-freeBtn.TextColor3 = Color3.fromRGB(255, 130, 0)
-freeBtn.Text = "Use Free Script"
-Instance.new("UICorner", freeBtn).CornerRadius = UDim.new(0, 4)
-
---// LOGIC
-enterBtn.MouseButton1Click:Connect(function()
-	local input = keyBox.Text
-	if not userData then
-		ShowNotification("❌ You are not a Premium user.")
-		return
-	elseif input == "" then
-		ShowNotification("⚠️ Please enter your key.")
-		return
-	elseif input ~= userData.key then
-		ShowNotification("❌ Invalid key.")
-		return
-	end
-
-	local remaining = expiredTimestamp - os.time()
-	if userData.issuedDate == "Permanen" then
-		gui:Destroy()
-		ShowNotification("💎 Lifetime Access Granted!")
-		task.wait(1)
-		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
-		end)
-	else
-		if remaining <= 0 then
-			ShowNotification("⏰ Your key has expired.")
-			return
-		else
-			gui:Destroy()
-			ShowNotification("✅ Premium Access: " .. formatRemaining(remaining))
-			task.wait(1)
-			pcall(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
-			end)
-		end
-	end
-end)
-
-freeBtn.MouseButton1Click:Connect(function()
-	gui:Destroy()
-	ShowNotification("💡 Loading Free Script...")
-	task.wait(1)
-	pcall(function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gato290/Script/refs/heads/main/Nexa%20Free"))()
-	end)
+-- VALID PREMIUM → LOAD PREMIUM
+ShowNotification("✅ Premium Access: " .. formatRemaining(remaining))
+task.wait(1)
+pcall(function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/fewnbhefbevfhevfdfveh/ckhsuciceifgeufhefveyfg/refs/heads/main/jduwgfPREMIUM"))()
 end)
